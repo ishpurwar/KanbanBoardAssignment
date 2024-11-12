@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { ColumnIcon, Dotme, Add } from './constants';
-import KanbanTicket from './Components/KanbanTicket';
+import { ColumnIcon, Dotme, Add } from '../constants';
+import KanbanTicket from './KanbanTicket';
 const KanbanBoard = () => {
     const [tickets, setTickets] = useState([]);
     const [groupBy, setGroupBy] = useState('status');

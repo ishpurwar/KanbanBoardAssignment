@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import KanbanBoard from './KanbanBoard';
+import KanbanBoard from './Components/KanbanBoard';
 
 function App() {
   return (

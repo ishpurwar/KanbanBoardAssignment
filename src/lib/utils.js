@@ -1,3 +1,6 @@
+const ALL_STATUSES = ['Backlog', 'Todo', 'In progress', 'Done', 'Canceled'];
+const ALL_PRIORITIES = ['No priority', 'Low', 'Medium', 'High', 'Urgent'];
+
 export const getPriorityLabel = (priority) => {
     switch (priority) {
         case 4: return 'Urgent';
@@ -5,7 +8,7 @@ export const getPriorityLabel = (priority) => {
         case 2: return 'Medium';
         case 1: return 'Low';
         case 0: return 'No priority';
-        default: return '';
+        default: return 'No priority';
     }
 };
 
@@ -21,7 +24,7 @@ export const getPriorityFromLabel = (label) => {
 };
 
 export const sortTickets = (tickets, sortBy) => {
-    return tickets.sort((a, b) => {
+    return [...tickets].sort((a, b) => {
         if (sortBy === 'priority') {
             return b.priority - a.priority;
         }
@@ -30,46 +33,57 @@ export const sortTickets = (tickets, sortBy) => {
 };
 
 export const groupByStatus = (tickets) => {
-    return tickets.reduce((groups, ticket) => {
-        if (!groups[ticket.status]) {
-            groups[ticket.status] = [];
+    // Initialize with all possible statuses
+    const groups = ALL_STATUSES.reduce((acc, status) => {
+        acc[status] = [];
+        return acc;
+    }, {});
+
+    // Add tickets to their respective groups
+    tickets.forEach(ticket => {
+        if (groups[ticket.status]) {
+            groups[ticket.status].push(ticket);
         }
-        groups[ticket.status].push(ticket);
-        return groups;
-    }, {
-        Todo: [],
-        Backlog: [],
-        'In progress': [],
-        Done: [],
-        Canceled: [],
     });
+
+    return groups;
 };
 
 export const groupByPriority = (tickets) => {
-    return tickets.reduce((groups, ticket) => {
-        const priority = getPriorityLabel(ticket.priority);
-        if (!groups[priority]) {
-            groups[priority] = [];
-        }
-        groups[priority].push(ticket);
-        return groups;
+    const groups = ALL_PRIORITIES.reduce((acc, priority) => {
+        acc[priority] = [];
+        return acc;
     }, {});
+
+    tickets.forEach(ticket => {
+        const priority = getPriorityLabel(ticket.priority);
+        if (groups[priority]) {
+            groups[priority].push(ticket);
+        }
+    });
+
+    return groups;
 };
 
 export const getUserNameById = (userId, users) => {
     const user = users.find((user) => user.id === userId);
-    return user ? user.name : 'Unknown User';
+    return user ? user.name : null;
 };
 
 export const groupByUser = (tickets, users) => {
-    return tickets.reduce((groups, ticket) => {
-        const user = getUserNameById(ticket.userId, users);
-        if (!groups[user]) {
-            groups[user] = [];
-        }
-        groups[user].push(ticket);
-        return groups;
+    const groups = users.reduce((acc, user) => {
+        acc[user.name] = [];
+        return acc;
     }, {});
+
+    tickets.forEach(ticket => {
+        const userName = getUserNameById(ticket.userId, users);
+        if (userName && groups[userName]) {
+            groups[userName].push(ticket);
+        }
+    });
+
+    return groups;
 };
 
 export const groupTickets = (tickets, groupBy, users) => {
@@ -79,4 +93,10 @@ export const groupTickets = (tickets, groupBy, users) => {
         case 'priority': return groupByPriority(tickets);
         default: return {};
     }
+};
+
+export const updateTicketInList = (tickets, updatedTicket) => {
+    return tickets.map(ticket => 
+        ticket.id === updatedTicket.id ? updatedTicket : ticket
+    );
 };

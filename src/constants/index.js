@@ -219,8 +219,8 @@ export const PriorityIcons = {
 export const UserIcon = () => (
   <div
     style={{
-      width: "20px",
-      height: "20px",
+      width: "16px",
+      height: "16px",
       background: "rgb(197, 195, 195)",
       borderRadius: "50%",
       padding: "2px",

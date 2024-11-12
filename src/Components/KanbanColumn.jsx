@@ -19,9 +19,19 @@ const KanbanColumn = ({ title, tickets, groupBy, users }) => {
                     <Dotme />
                 </div>
             </div>
-            <Droppable droppableId={title}>
-                {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef} className='drop'>
+            <Droppable droppableId={title} key={title}>
+                {(provided, snapshot) => (
+                    <div 
+                        {...provided.droppableProps} 
+                        ref={provided.innerRef} 
+                        className={`drop ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
+                        style={{
+                            minHeight: '100px', // Ensure minimum height for empty columns
+                            padding: '8px',
+                            backgroundColor: snapshot.isDraggingOver ? 'rgba(54, 179, 126, 0.1)' : 'transparent',
+                            transition: 'background-color 0.2s ease'
+                        }}
+                    >
                         {tickets.map((ticket, index) => (
                             <KanbanTicket 
                                 key={ticket.id} 
